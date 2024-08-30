@@ -29,14 +29,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parts := strings.Split(r.URL.Path+"//", "/")
-	vertexType := parts[1]
-	vertexNumberString := parts[2]
-	filename := parts[3]
+	vertexType := parts[2]
+	vertexNumberString := parts[3]
+	filename := parts[4]
 	vertexNumber, _ := strconv.ParseInt(vertexNumberString, 10, 64)
 
 	vertex := multidag.NewConcreteVertex()
 
-	if vertexType == "blockchain" && vertexNumber == 0 {
+	if vertexType == "block" && vertexNumber == 0 {
 		vertex.AddAttribute("technology", "Bitcoin")
 	}
 
@@ -44,4 +44,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		byts, _ := vertex.GetAttributes().EncodeAsJson()
 		fmt.Fprintf(w, "%s", byts)
 	}
+
+	if filename == "in.json" {
+		byts, _ := vertex.GetInEndpoints().EncodeAsJson()
+		fmt.Fprintf(w, "%s", byts)
+	}
+
+	if filename == "out.json" {
+		byts, _ := vertex.GetInEndpoints().EncodeAsJson()
+		fmt.Fprintf(w, "%s", byts)
+	}
+	fmt.Print()
 }

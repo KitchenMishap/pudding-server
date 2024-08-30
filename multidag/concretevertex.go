@@ -7,36 +7,42 @@ import (
 )
 
 type concreteVertex struct {
-	attributes attributes
-	inPoints   endpoints
-	outPoints  endpoints
+	attributes Attributes
+	inPoints   Endpoints
+	outPoints  Endpoints
 }
 
 func NewConcreteVertex() Vertex {
 	v := concreteVertex{}
-	v.attributes = attributes{}
-	v.attributes.attributes = make(map[string]string)
+	v.attributes = Attributes{}
+	v.attributes.Attributes = make(map[string]string)
+	v.inPoints = Endpoints{}
+	v.inPoints.Single = make(map[string]SingleEndpoint)
+	v.inPoints.Multi = make(map[string]MultiEndpoint)
+	v.outPoints = Endpoints{}
+	v.outPoints.Single = make(map[string]SingleEndpoint)
+	v.outPoints.Multi = make(map[string]MultiEndpoint)
 	return &v
 }
 
-type attributes struct {
-	attributes map[string]string
+type Attributes struct {
+	Attributes map[string]string
 }
 
-func (a *attributes) EncodeAsJson() ([]byte, error) {
-	jsonBytes, err := json.Marshal(a.attributes)
+func (a *Attributes) EncodeAsJson() ([]byte, error) {
+	jsonBytes, err := json.Marshal(a.Attributes)
 	if err != nil {
 		return nil, err
 	}
 	return jsonBytes, nil
 }
 
-type endpoints struct {
-	single map[string]singleEndpoint
-	multi  map[string]multiEndpoint
+type Endpoints struct {
+	Single map[string]SingleEndpoint `json:"single"`
+	Multi  map[string]MultiEndpoint  `json:"multi"`
 }
 
-func (e *endpoints) EncodeAsJson() ([]byte, error) {
+func (e *Endpoints) EncodeAsJson() ([]byte, error) {
 	jsonBytes, err := json.Marshal(e)
 	if err != nil {
 		return nil, err
@@ -44,19 +50,19 @@ func (e *endpoints) EncodeAsJson() ([]byte, error) {
 	return jsonBytes, nil
 }
 
-type singleEndpoint struct {
-	otherVertex string
-	otherlabel  string
+type SingleEndpoint struct {
+	OtherVertex string `json:"otherVertex"`
+	Otherlabel  string `json:"otherLabel"`
 }
 
-type multiEndpoint struct {
-	totalCount      int
-	vertexSelection vertexSelection
+type MultiEndpoint struct {
+	TotalCount      int             `json:"totalCount"`
+	VertexSelection VertexSelection `json:"vertexSelection"`
 }
 
-type vertexSelection struct {
-	firstIndex    int
-	otherVertices []string
+type VertexSelection struct {
+	FirstIndex    int      `json:"firstIndex"`
+	OtherVertices []string `json:"otherVertices"`
 }
 
 func (cv *concreteVertex) GetAttributes() jsonstuff.Jsonable {
@@ -70,42 +76,42 @@ func (cv *concreteVertex) GetOutEndpoints() jsonstuff.Jsonable {
 }
 
 func (cv *concreteVertex) AddAttribute(key string, value string) {
-	cv.attributes.attributes[key] = value
+	cv.attributes.Attributes[key] = value
 }
 func (cv *concreteVertex) AddSingleInpoint(name string, sourceType string, sourceIndex int64, otherEndLabel string) {
-	value := singleEndpoint{}
-	value.otherVertex = sourceType + strconv.Itoa(int(sourceIndex))
-	value.otherlabel = otherEndLabel
-	cv.inPoints.single[name] = value
+	value := SingleEndpoint{}
+	value.OtherVertex = sourceType + strconv.Itoa(int(sourceIndex))
+	value.Otherlabel = otherEndLabel
+	cv.inPoints.Single[name] = value
 }
 func (cv *concreteVertex) AddMultiInpoint(name string, sourceType string, totalCount int64, selectionIndices []int64) {
-	value := multiEndpoint{}
-	value.totalCount = int(totalCount)
-	vertexSelection := vertexSelection{}
-	vertexSelection.firstIndex = 0
+	value := MultiEndpoint{}
+	value.TotalCount = int(totalCount)
+	vertexSelection := VertexSelection{}
+	vertexSelection.FirstIndex = 0
 	for _, v := range selectionIndices {
 		partialUrl := sourceType + strconv.Itoa(int(v))
-		vertexSelection.otherVertices = append(vertexSelection.otherVertices, partialUrl)
+		vertexSelection.OtherVertices = append(vertexSelection.OtherVertices, partialUrl)
 	}
-	value.vertexSelection = vertexSelection
-	cv.inPoints.multi[name] = value
+	value.VertexSelection = vertexSelection
+	cv.inPoints.Multi[name] = value
 }
 
 func (cv *concreteVertex) AddSingleOutpoint(name string, targetType string, targetIndex int64, otherEndLabel string) {
-	value := singleEndpoint{}
-	value.otherVertex = targetType + strconv.Itoa(int(targetIndex))
-	value.otherlabel = otherEndLabel
-	cv.inPoints.single[name] = value
+	value := SingleEndpoint{}
+	value.OtherVertex = targetType + strconv.Itoa(int(targetIndex))
+	value.Otherlabel = otherEndLabel
+	cv.inPoints.Single[name] = value
 }
 func (cv *concreteVertex) AddMultiOutpoint(name string, targetType string, totalCount int64, selectionIndices []int64) {
-	value := multiEndpoint{}
-	value.totalCount = int(totalCount)
-	vertexSelection := vertexSelection{}
-	vertexSelection.firstIndex = 0
+	value := MultiEndpoint{}
+	value.TotalCount = int(totalCount)
+	vertexSelection := VertexSelection{}
+	vertexSelection.FirstIndex = 0
 	for _, v := range selectionIndices {
 		partialUrl := targetType + strconv.Itoa(int(v))
-		vertexSelection.otherVertices = append(vertexSelection.otherVertices, partialUrl)
+		vertexSelection.OtherVertices = append(vertexSelection.OtherVertices, partialUrl)
 	}
-	value.vertexSelection = vertexSelection
-	cv.inPoints.multi[name] = value
+	value.VertexSelection = vertexSelection
+	cv.inPoints.Multi[name] = value
 }
