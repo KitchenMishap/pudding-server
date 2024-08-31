@@ -62,6 +62,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		vertex = theChain.GetTransactionVertex(vertexNumber)
 	} else if vertexType == "txo" {
 		vertex = theChain.GetTxoVertex(vertexNumber)
+	} else if vertexType == "address" {
+		vertex = theChain.GetAddressVertex(vertexNumber)
 	}
 
 	if filename == "attributes.json" {

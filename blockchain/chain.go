@@ -119,5 +119,35 @@ func (cr *ChainReader) GetTxoVertex(txoHeight int64) multidag.Vertex {
 	// Parent transaction
 	parentTransHeight, _ := cr.parents.ParentTransOfTxo(txoHeight)
 	vertex.AddSingleInpoint("transaction", "transaction", parentTransHeight, "txos")
+
+	// Parent Address
+	hAddress, _ := txo.Address()
+	if hAddress.HeightSpecified() {
+		addressHeight := hAddress.Height()
+		vertex.AddSingleInpoint("address", "address", addressHeight, "txos")
+	}
+
+	return vertex
+}
+
+func (cr *ChainReader) GetAddressVertex(addrHeight int64) multidag.Vertex {
+	vertex := multidag.NewConcreteVertex()
+	handle, _ := cr.handleCreator.AddressHandleByHeight(addrHeight)
+	addr, _ := cr.chainRead.AddressInterface(handle)
+
+	// Attributes
+
+	// Child txos
+	txoSelection := []int64{}
+	txoCount, _ := addr.TxoCount()
+	toShow := math.Min(2, float64(txoCount))
+	for i := int64(0); i < int64(toShow); i++ {
+		hTxo, _ := addr.NthTxo(i)
+		if hTxo.TxoHeightSpecified() {
+			txoSelection = append(txoSelection, hTxo.TxoHeight())
+		}
+	}
+	vertex.AddMultiOutpoint("txos", "txo", txoCount, txoSelection)
+
 	return vertex
 }
