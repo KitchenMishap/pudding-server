@@ -3,6 +3,7 @@ package blockchain
 import (
 	"github.com/KitchenMishap/pudding-shed/chainreadinterface"
 	"github.com/KitchenMishap/pudding-shed/chainstorage"
+	"github.com/KitchenMishap/pudding-shed/indexedhashes"
 	"math"
 	"pudding-server/multidag"
 	"strconv"
@@ -150,4 +151,50 @@ func (cr *ChainReader) GetAddressVertex(addrHeight int64) multidag.Vertex {
 	vertex.AddMultiOutpoint("txos", "txo", txoCount, txoSelection)
 
 	return vertex
+}
+
+func (cr *ChainReader) LookupAddress(address string) int64 {
+	hAddress, _ := cr.handleCreator.AddressHandleByString(address)
+	if hAddress == nil {
+		return -1
+	}
+	if hAddress.HeightSpecified() {
+		return hAddress.Height()
+	} else {
+		return -1
+	}
+}
+
+func (cr *ChainReader) LookupTransaction(hashAscii string) int64 {
+	hash := indexedhashes.Sha256{}
+	err := indexedhashes.HashHexToSha256(hashAscii, &hash)
+	if err != nil {
+		return -1
+	}
+	hTrans, _ := cr.handleCreator.TransactionHandleByHash(hash)
+	if hTrans == nil {
+		return -1
+	}
+	if hTrans.HeightSpecified() {
+		return hTrans.Height()
+	} else {
+		return -1
+	}
+}
+
+func (cr *ChainReader) LookupBlock(hashAscii string) int64 {
+	hash := indexedhashes.Sha256{}
+	err := indexedhashes.HashHexToSha256(hashAscii, &hash)
+	if err != nil {
+		return -1
+	}
+	hBlock, _ := cr.handleCreator.BlockHandleByHash(hash)
+	if hBlock == nil {
+		return -1
+	}
+	if hBlock.HeightSpecified() {
+		return hBlock.Height()
+	} else {
+		return -1
+	}
 }

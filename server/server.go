@@ -33,7 +33,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parts := strings.Split(r.URL.Path, "/")
-	if len(parts) != 5 {
+	if len(parts) < 2 {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
@@ -43,10 +43,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	verticesString := parts[1]
-	if verticesString != "vertices" {
+	if verticesString == "vertices" {
+		handleVertices(w, r, parts)
+	} else if verticesString == "lookup" {
+		handleLookups(w, r, parts)
+	} else {
 		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
 	}
+	return
+}
+func handleVertices(w http.ResponseWriter, r *http.Request, parts []string) {
 	vertexType := parts[2]
 	vertexNumberString := parts[3]
 	filename := parts[4]
@@ -80,5 +86,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		byts, _ := vertex.GetOutEndpoints().EncodeAsJson()
 		fmt.Fprintf(w, "%s", byts)
 	}
-	fmt.Print()
+}
+
+func handleLookups(w http.ResponseWriter, r *http.Request, parts []string) {
+	hashOrAddress := parts[2]
+	// Is this string a known address, block hash, or transaction hash?
+	addressHeight := theChain.LookupAddress(hashOrAddress)
+	if addressHeight != -1 {
+		fmt.Fprintf(w, "{\"partialUrl\":\"address/%d\"}", addressHeight)
+	} else {
+		transHeight := theChain.LookupTransaction(hashOrAddress)
+		if transHeight != -1 {
+			fmt.Fprintf(w, "{\"partialUrl\":\"transaction/%d\"}", transHeight)
+		} else {
+			blockHeight := theChain.LookupBlock(hashOrAddress)
+			if blockHeight != -1 {
+				fmt.Fprintf(w, "{\"partialUrl\":\"block/%d\"}", blockHeight)
+			} else {
+				http.Error(w, "404 not found.", http.StatusNotFound)
+			}
+		}
+	}
 }
