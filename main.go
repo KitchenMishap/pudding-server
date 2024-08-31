@@ -7,6 +7,6 @@ import (
 
 func main() {
 	println("Please wait... opening files")
-	reader := blockchain.NewChainReader("F:/Data/858000AddressesCswParents")
+	reader := blockchain.NewChainReader("G:/Data/858000AddressesCswParents")
 	server.Server(reader)
 }

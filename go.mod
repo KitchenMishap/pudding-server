@@ -2,4 +2,4 @@ module pudding-server
 
 go 1.22
 
-require github.com/KitchenMishap/pudding-shed v0.0.1 // indirect
+require github.com/KitchenMishap/pudding-shed v0.0.2 // indirect

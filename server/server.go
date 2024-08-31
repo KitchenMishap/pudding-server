@@ -58,6 +58,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		vertex = theChain.GetBlockchainVertex()
 	} else if vertexType == "block" {
 		vertex = theChain.GetBlockVertex(vertexNumber)
+	} else if vertexType == "transaction" {
+		vertex = theChain.GetTransactionVertex(vertexNumber)
 	}
 
 	if filename == "attributes.json" {
