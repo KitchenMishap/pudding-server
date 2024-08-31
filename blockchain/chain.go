@@ -88,5 +88,36 @@ func (cr *ChainReader) GetTransactionVertex(transHeight int64) multidag.Vertex {
 	// Parent block
 	parentBlockHeight, _ := cr.parents.ParentBlockOfTrans(transHeight)
 	vertex.AddSingleInpoint("block", "block", parentBlockHeight, "transactions")
+
+	// Children Txos
+	txoHeights := []int64{}
+	txoCount, _ := trans.TxoCount()
+	toShow := math.Min(2, float64(txoCount))
+	for i := int64(0); i < int64(toShow); i++ {
+		hTxo, _ := trans.NthTxo(i)
+		if hTxo.TxoHeightSpecified() {
+			txoHeights = append(txoHeights, hTxo.TxoHeight())
+		}
+	}
+	vertex.AddMultiOutpoint("txos", "txo", txoCount, txoHeights)
+
+	return vertex
+}
+
+func (cr *ChainReader) GetTxoVertex(txoHeight int64) multidag.Vertex {
+	vertex := multidag.NewConcreteVertex()
+	handle, err := cr.handleCreator.TxoHandleByHeight(txoHeight)
+	if err != nil {
+		println(err.Error())
+	}
+	txo, _ := cr.chainRead.TxoInterface(handle)
+
+	// Attributes
+	sats, _ := txo.Satoshis()
+	vertex.AddAttribute("satoshis", strconv.Itoa(int(sats)))
+
+	// Parent transaction
+	parentTransHeight, _ := cr.parents.ParentTransOfTxo(txoHeight)
+	vertex.AddSingleInpoint("transaction", "transaction", parentTransHeight, "txos")
 	return vertex
 }
