@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"pudding-server/blockchain"
 	"pudding-server/multidag"
 	"strconv"
 	"strings"
 )
 
-func Server() {
+var theChain blockchain.ChainReader
+
+func Server(reader blockchain.ChainReader) {
+	theChain = reader
 	http.HandleFunc("/", handler) // each request calls handler
-	println("Listening on port 8000, ctrl-c to end")
+	println("Listening on port 8000, server is now active (the wait is over)")
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
@@ -28,16 +32,32 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", origin)
 	}
 
-	parts := strings.Split(r.URL.Path+"//", "/")
+	parts := strings.Split(r.URL.Path, "/")
+	if len(parts) != 5 {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	rootString := parts[0]
+	if rootString != "" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	verticesString := parts[1]
+	if verticesString != "vertices" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
 	vertexType := parts[2]
 	vertexNumberString := parts[3]
 	filename := parts[4]
 	vertexNumber, _ := strconv.ParseInt(vertexNumberString, 10, 64)
 
-	vertex := multidag.NewConcreteVertex()
+	var vertex multidag.Vertex
 
-	if vertexType == "block" && vertexNumber == 0 {
-		vertex.AddAttribute("technology", "Bitcoin")
+	if vertexType == "blockchain" && vertexNumber == 0 {
+		vertex = theChain.GetBlockchainVertex()
+	} else if vertexType == "block" {
+		vertex = theChain.GetBlockVertex(vertexNumber)
 	}
 
 	if filename == "attributes.json" {
@@ -51,7 +71,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if filename == "out.json" {
-		byts, _ := vertex.GetInEndpoints().EncodeAsJson()
+		byts, _ := vertex.GetOutEndpoints().EncodeAsJson()
 		fmt.Fprintf(w, "%s", byts)
 	}
 	fmt.Print()

@@ -80,7 +80,7 @@ func (cv *concreteVertex) AddAttribute(key string, value string) {
 }
 func (cv *concreteVertex) AddSingleInpoint(name string, sourceType string, sourceIndex int64, otherEndLabel string) {
 	value := SingleEndpoint{}
-	value.OtherVertex = sourceType + strconv.Itoa(int(sourceIndex))
+	value.OtherVertex = sourceType + "/" + strconv.Itoa(int(sourceIndex))
 	value.Otherlabel = otherEndLabel
 	cv.inPoints.Single[name] = value
 }
@@ -90,7 +90,7 @@ func (cv *concreteVertex) AddMultiInpoint(name string, sourceType string, totalC
 	vertexSelection := VertexSelection{}
 	vertexSelection.FirstIndex = 0
 	for _, v := range selectionIndices {
-		partialUrl := sourceType + strconv.Itoa(int(v))
+		partialUrl := sourceType + "/" + strconv.Itoa(int(v))
 		vertexSelection.OtherVertices = append(vertexSelection.OtherVertices, partialUrl)
 	}
 	value.VertexSelection = vertexSelection
@@ -99,9 +99,9 @@ func (cv *concreteVertex) AddMultiInpoint(name string, sourceType string, totalC
 
 func (cv *concreteVertex) AddSingleOutpoint(name string, targetType string, targetIndex int64, otherEndLabel string) {
 	value := SingleEndpoint{}
-	value.OtherVertex = targetType + strconv.Itoa(int(targetIndex))
+	value.OtherVertex = targetType + "/" + strconv.Itoa(int(targetIndex))
 	value.Otherlabel = otherEndLabel
-	cv.inPoints.Single[name] = value
+	cv.outPoints.Single[name] = value
 }
 func (cv *concreteVertex) AddMultiOutpoint(name string, targetType string, totalCount int64, selectionIndices []int64) {
 	value := MultiEndpoint{}
@@ -109,9 +109,9 @@ func (cv *concreteVertex) AddMultiOutpoint(name string, targetType string, total
 	vertexSelection := VertexSelection{}
 	vertexSelection.FirstIndex = 0
 	for _, v := range selectionIndices {
-		partialUrl := targetType + strconv.Itoa(int(v))
+		partialUrl := targetType + "/" + strconv.Itoa(int(v))
 		vertexSelection.OtherVertices = append(vertexSelection.OtherVertices, partialUrl)
 	}
 	value.VertexSelection = vertexSelection
-	cv.inPoints.Multi[name] = value
+	cv.outPoints.Multi[name] = value
 }
