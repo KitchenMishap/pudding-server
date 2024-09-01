@@ -5,6 +5,7 @@ import (
 	"github.com/KitchenMishap/pudding-shed/chainstorage"
 	"github.com/KitchenMishap/pudding-shed/indexedhashes"
 	"math"
+	"pudding-server/derived"
 	"pudding-server/multidag"
 	"strconv"
 )
@@ -24,7 +25,7 @@ func NewChainReader(folder string) ChainReader {
 		[]string{"time", "mediantime", "difficulty", "strippedsize", "size", "weight"},
 		[]string{"size", "vsize", "weight"},
 		true)
-	readableChain, handleCreator, parents, _ := creator.OpenReadOnly()
+	readableChain, handleCreator, parents, _, _ := creator.OpenReadOnly()
 	reader.chainRead = readableChain
 	reader.handleCreator = handleCreator
 	reader.parents = parents
@@ -90,10 +91,24 @@ func (cr *ChainReader) GetTransactionVertex(transHeight int64) multidag.Vertex {
 	parentBlockHeight, _ := cr.parents.ParentBlockOfTrans(transHeight)
 	vertex.AddSingleInpoint("block", "block", parentBlockHeight, "transactions")
 
+	// Parent txos as txis
+	txiTxoHeights := []int64{}
+	txiCount, _ := trans.TxiCount()
+	toShow := math.Min(2, float64(txiCount))
+	for i := int64(0); i < int64(toShow); i++ {
+		hTxi, _ := trans.NthTxi(i)
+		txi, _ := cr.chainRead.TxiInterface(hTxi)
+		hTxo, _ := txi.SourceTxo()
+		if hTxo.TxoHeightSpecified() {
+			txiTxoHeights = append(txiTxoHeights, hTxo.TxoHeight())
+		}
+	}
+	vertex.AddMultiInpoint("txis", "txo", txiCount, txiTxoHeights)
+
 	// Children Txos
 	txoHeights := []int64{}
 	txoCount, _ := trans.TxoCount()
-	toShow := math.Min(2, float64(txoCount))
+	toShow = math.Min(2, float64(txoCount))
 	for i := int64(0); i < int64(toShow); i++ {
 		hTxo, _ := trans.NthTxo(i)
 		if hTxo.TxoHeightSpecified() {
@@ -105,7 +120,7 @@ func (cr *ChainReader) GetTransactionVertex(transHeight int64) multidag.Vertex {
 	return vertex
 }
 
-func (cr *ChainReader) GetTxoVertex(txoHeight int64) multidag.Vertex {
+func (cr *ChainReader) GetTxoVertex(txoHeight int64, df *derived.DerivedFiles) multidag.Vertex {
 	vertex := multidag.NewConcreteVertex()
 	handle, err := cr.handleCreator.TxoHandleByHeight(txoHeight)
 	if err != nil {
@@ -126,6 +141,12 @@ func (cr *ChainReader) GetTxoVertex(txoHeight int64) multidag.Vertex {
 	if hAddress.HeightSpecified() {
 		addressHeight := hAddress.Height()
 		vertex.AddSingleInpoint("address", "address", addressHeight, "txos")
+	}
+
+	// Child Txi
+	txi, spent, _ := df.GetTxoSpentTxi(txoHeight)
+	if spent {
+		vertex.AddSingleOutpoint("spent", "transaction", txi, "txis")
 	}
 
 	return vertex

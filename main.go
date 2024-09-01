@@ -1,12 +1,16 @@
 package main
 
 import (
-	"pudding-server/blockchain"
-	"pudding-server/server"
+	"pudding-server/jobs"
 )
 
 func main() {
-	println("Please wait... opening files")
-	reader := blockchain.NewChainReader("F:/Data/858000AddressesCswParents")
-	server.Server(reader)
+	folder := "F:/Data/858000AddressesCswParents"
+
+	//err := jobs.ConstructTxoSpentTxi(folder)
+	err := jobs.RunServer(folder)
+
+	if err != nil {
+		println(err.Error())
+	}
 }

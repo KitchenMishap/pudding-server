@@ -89,6 +89,7 @@ func (cv *concreteVertex) AddMultiInpoint(name string, sourceType string, totalC
 	value.TotalCount = int(totalCount)
 	vertexSelection := VertexSelection{}
 	vertexSelection.FirstIndex = 0
+	vertexSelection.OtherVertices = []string{}
 	for _, v := range selectionIndices {
 		partialUrl := sourceType + "/" + strconv.Itoa(int(v))
 		vertexSelection.OtherVertices = append(vertexSelection.OtherVertices, partialUrl)
@@ -108,6 +109,7 @@ func (cv *concreteVertex) AddMultiOutpoint(name string, targetType string, total
 	value.TotalCount = int(totalCount)
 	vertexSelection := VertexSelection{}
 	vertexSelection.FirstIndex = 0
+	vertexSelection.OtherVertices = []string{}
 	for _, v := range selectionIndices {
 		partialUrl := targetType + "/" + strconv.Itoa(int(v))
 		vertexSelection.OtherVertices = append(vertexSelection.OtherVertices, partialUrl)

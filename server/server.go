@@ -5,15 +5,18 @@ import (
 	"log"
 	"net/http"
 	"pudding-server/blockchain"
+	"pudding-server/derived"
 	"pudding-server/multidag"
 	"strconv"
 	"strings"
 )
 
 var theChain blockchain.ChainReader
+var theDerived *derived.DerivedFiles
 
-func Server(reader blockchain.ChainReader) {
+func Server(reader blockchain.ChainReader, df *derived.DerivedFiles) {
 	theChain = reader
+	theDerived = df
 	http.HandleFunc("/", handler) // each request calls handler
 	println("Listening on port 8000, server is now active (the wait is over)")
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
@@ -67,7 +70,7 @@ func handleVertices(w http.ResponseWriter, r *http.Request, parts []string) {
 	} else if vertexType == "transaction" {
 		vertex = theChain.GetTransactionVertex(vertexNumber)
 	} else if vertexType == "txo" {
-		vertex = theChain.GetTxoVertex(vertexNumber)
+		vertex = theChain.GetTxoVertex(vertexNumber, theDerived)
 	} else if vertexType == "address" {
 		vertex = theChain.GetAddressVertex(vertexNumber)
 	}
