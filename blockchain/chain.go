@@ -146,7 +146,9 @@ func (cr *ChainReader) GetTxoVertex(txoHeight int64, df *derived.DerivedFiles) m
 	// Child Txi
 	txi, unspent, _ := df.GetTxoSpentTxi(txoHeight)
 	if !unspent {
-		vertex.AddSingleOutpoint("spent", "transaction", txi, "txis")
+		// Actually we want the transaction of the txi
+		trans, _ := cr.parents.ParentTransOfTxi(txi)
+		vertex.AddSingleOutpoint("spent", "transaction", trans, "txis")
 	}
 
 	return vertex

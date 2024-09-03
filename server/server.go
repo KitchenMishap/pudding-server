@@ -22,7 +22,6 @@ func Server(reader blockchain.ChainReader, df *derived.DerivedFiles) {
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
-// handler echoes the Path component of the requested URL.
 func handler(w http.ResponseWriter, r *http.Request) {
 	// Get the request origin
 	origin := r.Header.Get("Origin")
