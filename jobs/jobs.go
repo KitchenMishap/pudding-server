@@ -41,3 +41,18 @@ func ConstructTxoSpentTxi(folder string) error {
 	println("...Done")
 	return nil
 }
+
+func ConstructTxoParentTrans(folder string) error {
+	println("Please wait... Constructing TxoParentTrans")
+	derivedFiles, err := derived.NewDerivedFiles(folder)
+	if err != nil {
+		return err
+	}
+
+	err = derived.ConstructTxoParentTrans(derivedFiles)
+	if err != nil {
+		return err
+	}
+	println("...Done")
+	return nil
+}
