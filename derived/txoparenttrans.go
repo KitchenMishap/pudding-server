@@ -19,7 +19,7 @@ func ConstructTxoParentTrans(derived *DerivedFiles) error {
 	var wordSize int64 = txiTxWordFile.WordSize()
 
 	// Create file & open it
-	fileCreator := wordfile.NewConcreteWordFileCreator("txoparenttrans", derived.folder+"/derived", wordSize)
+	fileCreator := wordfile.NewConcreteWordFileCreator("txoparenttrans", derived.folder+"/derived", wordSize, false)
 	err = fileCreator.CreateWordFile()
 	if err != nil {
 		return err

@@ -31,7 +31,7 @@ func NewDerivedFiles(folder string) (*DerivedFiles, error) {
 	var transFirstTxiWordFile wordfile.ReadAtWordCounter = files.TransFirstTxiFile()
 	var wordSize int64 = transFirstTxiWordFile.WordSize()
 
-	result.txoSpentTxiFactory = wordfile.NewConcreteWordFileCreator("txospenttxi", folder+"/derived", wordSize)
+	result.txoSpentTxiFactory = wordfile.NewConcreteWordFileCreator("txospenttxi", folder+"/derived", wordSize, false)
 
 	return &result, nil
 }

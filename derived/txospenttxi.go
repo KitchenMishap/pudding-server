@@ -22,7 +22,7 @@ func ConstructTxoSpentTxi(derived *DerivedFiles) error {
 	var wordSize int64 = transFirstTxiWordFile.WordSize()
 
 	// Create file right size & open it
-	fileCreator := wordfile.NewConcreteWordFileCreator("txospenttxi", derived.folder+"/derived", wordSize)
+	fileCreator := wordfile.NewConcreteWordFileCreator("txospenttxi", derived.folder+"/derived", wordSize, false)
 	err = fileCreator.CreateWordFileFilledZeros(numTxos)
 	if err != nil {
 		return err
