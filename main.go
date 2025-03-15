@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	folder := "F:\\Data\\BuzzSpinCredit 10Feb 16years"
+	folder := "F:\\Data\\InputBurgerAbsent 1Mar 16years"
 
 	err := jobs.ConstructTxoSpentTxi(folder)
 	//err := jobs.ConstructTxoParentTrans(folder)
