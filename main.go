@@ -5,11 +5,11 @@ import (
 )
 
 func main() {
-	folder := "F:\\Data\\InputBurgerAbsent 1Mar 16years"
+	folder := "F:\\Data\\TwoYear"
 
-	err := jobs.ConstructTxoSpentTxi(folder)
+	//err := jobs.ConstructTxoSpentTxi(folder)
 	//err := jobs.ConstructTxoParentTrans(folder)
-	//err := jobs.RunServer(folder)
+	err := jobs.RunServer(folder)
 
 	if err != nil {
 		println(err.Error())
