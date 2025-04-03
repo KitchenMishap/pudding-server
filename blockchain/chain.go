@@ -101,6 +101,11 @@ func (cr *ChainReader) GetTransactionVertex(transHeight int64) multidag.Vertex {
 		hTxo, _ := txi.SourceTxo()
 		if hTxo.TxoHeightSpecified() {
 			txiTxoHeights = append(txiTxoHeights, hTxo.TxoHeight())
+		} else {
+			txo, _ := cr.chainRead.TxoInterface(hTxo)
+			if txo.TxoHeightSpecified() {
+				txiTxoHeights = append(txiTxoHeights, txo.TxoHeight())
+			}
 		}
 	}
 	vertex.AddMultiInpoint("txis", "txo", txiCount, txiTxoHeights)
