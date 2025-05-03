@@ -11,10 +11,10 @@ import (
 	"strings"
 )
 
-var theChain blockchain.ChainReader
+var theChain *blockchain.ChainReader
 var theDerived *derived.DerivedFiles
 
-func Server(reader blockchain.ChainReader, df *derived.DerivedFiles) {
+func Server(reader *blockchain.ChainReader, df *derived.DerivedFiles) {
 	theChain = reader
 	theDerived = df
 	http.HandleFunc("/", handler) // each request calls handler

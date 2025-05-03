@@ -5,11 +5,11 @@ import (
 )
 
 func main() {
-	folder := "E:\\Data\\GaugeFlyDivorce888888_5digitsNewParams"
+	folder := "E:\\Data\\FleeSwallowImmune888888CswHashesDeleted"
 
-	err := jobs.ConstructTxoSpentTxi(folder)
+	//err := jobs.ConstructTxoSpentTxi(folder)
 	//err := jobs.ConstructTxoParentTrans(folder)
-	//err := jobs.RunServer(folder)
+	err := jobs.RunServer(folder)
 
 	if err != nil {
 		println(err.Error())

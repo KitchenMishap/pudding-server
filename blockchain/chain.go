@@ -17,19 +17,22 @@ type ChainReader struct {
 	parents       chainstorage.IParents
 }
 
-func NewChainReader(folder string) ChainReader {
+func NewChainReader(folder string) (*ChainReader, error) {
 	reader := ChainReader{}
 	reader.folder = folder
-	creator, _ := chainstorage.NewConcreteAppendableChainCreator(
+	creator, err := chainstorage.NewConcreteAppendableChainCreator(
 		folder,
 		[]string{"time", "mediantime", "difficulty", "strippedsize", "size", "weight"},
 		[]string{"size", "vsize", "weight"},
 		true)
+	if err != nil {
+		return nil, err
+	}
 	readableChain, handleCreator, parents, _, _ := creator.OpenReadOnly()
 	reader.chainRead = readableChain
 	reader.handleCreator = handleCreator
 	reader.parents = parents
-	return reader
+	return &reader, nil
 }
 
 func (cr *ChainReader) GetBlockchainVertex() multidag.Vertex {

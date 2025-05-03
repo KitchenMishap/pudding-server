@@ -8,7 +8,10 @@ import (
 
 func RunServer(folder string) error {
 	println("Please wait... opening files")
-	reader := blockchain.NewChainReader(folder)
+	reader, err := blockchain.NewChainReader(folder)
+	if err != nil {
+		return err
+	}
 	df, err := derived.NewDerivedFiles(folder)
 	if err != nil {
 		return err
