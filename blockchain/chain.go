@@ -10,6 +10,8 @@ import (
 	"strconv"
 )
 
+const ChildrenToShow = 10
+
 type ChainReader struct {
 	folder        string
 	chainRead     chainreadinterface.IBlockChain
@@ -40,7 +42,7 @@ func (cr *ChainReader) GetBlockchainVertex() multidag.Vertex {
 	hLatestBlock, _ := cr.chainRead.LatestBlock()
 	if hLatestBlock.HeightSpecified() {
 		latestBlockHeight := hLatestBlock.Height()
-		blocksToShow := math.Min(2, float64(latestBlockHeight)+1)
+		blocksToShow := math.Min(ChildrenToShow, float64(latestBlockHeight)+1)
 		blockHeights := []int64{}
 		for i := 0; i < int(blocksToShow); i++ {
 			blockHeights = append(blockHeights, int64(i))
@@ -67,7 +69,7 @@ func (cr *ChainReader) GetBlockVertex(blockHeight int64) multidag.Vertex {
 	// Children transactions
 	transHeights := []int64{}
 	transactionCount, _ := block.TransactionCount()
-	toShow := math.Min(2, float64(transactionCount))
+	toShow := math.Min(ChildrenToShow, float64(transactionCount))
 	for i := 0; i < int(toShow); i++ {
 		hTrans, _ := block.NthTransaction(int64(i))
 		if hTrans.HeightSpecified() {
@@ -94,10 +96,17 @@ func (cr *ChainReader) GetTransactionVertex(transHeight int64) multidag.Vertex {
 	parentBlockHeight, _ := cr.parents.ParentBlockOfTrans(transHeight)
 	vertex.AddSingleInpoint("block", "block", parentBlockHeight, "transactions")
 
+	// Time from block
+	blockHandle, _ := cr.handleCreator.BlockHandleByHeight(parentBlockHeight)
+	block, _ := cr.chainRead.BlockInterface(blockHandle)
+	nei2, _ := block.NonEssentialInts()
+	medianTime := (*nei2)["mediantime"]
+	vertex.AddAttribute("blockmediantime", strconv.Itoa(int(medianTime)))
+
 	// Parent txos as txis
 	txiTxoHeights := []int64{}
 	txiCount, _ := trans.TxiCount()
-	toShow := math.Min(2, float64(txiCount))
+	toShow := math.Min(ChildrenToShow, float64(txiCount))
 	for i := int64(0); i < int64(toShow); i++ {
 		hTxi, _ := trans.NthTxi(i)
 		txi, _ := cr.chainRead.TxiInterface(hTxi)
@@ -116,7 +125,7 @@ func (cr *ChainReader) GetTransactionVertex(transHeight int64) multidag.Vertex {
 	// Children Txos
 	txoHeights := []int64{}
 	txoCount, _ := trans.TxoCount()
-	toShow = math.Min(2, float64(txoCount))
+	toShow = math.Min(ChildrenToShow, float64(txoCount))
 	for i := int64(0); i < int64(toShow); i++ {
 		hTxo, _ := trans.NthTxo(i)
 		if hTxo.TxoHeightSpecified() {
@@ -172,7 +181,7 @@ func (cr *ChainReader) GetAddressVertex(addrHeight int64) multidag.Vertex {
 	// Child txos
 	txoSelection := []int64{}
 	txoCount, _ := addr.TxoCount()
-	toShow := math.Min(2, float64(txoCount))
+	toShow := math.Min(ChildrenToShow, float64(txoCount))
 	for i := int64(0); i < int64(toShow); i++ {
 		hTxo, _ := addr.NthTxo(i)
 		if hTxo.TxoHeightSpecified() {
