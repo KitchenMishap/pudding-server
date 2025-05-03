@@ -45,8 +45,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	verticesString := parts[1]
-	if verticesString == "vertices" {
-		handleVertices(w, r, parts)
+	if verticesString == "fulldag-vertex" {
+		handleFulldagVertex(w, r, parts)
 	} else if verticesString == "lookup" {
 		handleLookups(w, r, parts)
 	} else {
@@ -54,7 +54,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	return
 }
-func handleVertices(w http.ResponseWriter, r *http.Request, parts []string) {
+func handleFulldagVertex(w http.ResponseWriter, r *http.Request, parts []string) {
 	vertexType := parts[2]
 	vertexNumberString := parts[3]
 	filename := parts[4]
