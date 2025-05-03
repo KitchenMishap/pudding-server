@@ -47,6 +47,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	verticesString := parts[1]
 	if verticesString == "fulldag-vertex" {
 		handleFulldagVertex(w, r, parts)
+	} else if verticesString == "minidag-vertex" {
+		handleFulldagVertex(w, r, parts)
 	} else if verticesString == "lookup" {
 		handleLookups(w, r, parts)
 	} else {
