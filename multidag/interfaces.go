@@ -1,6 +1,6 @@
 package multidag
 
-import "pudding-server/jsonstuff"
+import "github.com/KitchenMishap/pudding-server/jsonstuff"
 
 type Vertex interface {
 	GetAttributes() jsonstuff.Jsonable

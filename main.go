@@ -1,7 +1,7 @@
 package main
 
 import (
-	"pudding-server/jobs"
+	"github.com/KitchenMishap/pudding-server/jobs"
 )
 
 func main() {

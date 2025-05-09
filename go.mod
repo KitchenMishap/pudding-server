@@ -1,4 +1,4 @@
-module pudding-server
+module github.com/KitchenMishap/pudding-server
 
 go 1.22
 

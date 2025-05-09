@@ -1,9 +1,9 @@
 package jobs
 
 import (
-	"pudding-server/blockchain"
-	"pudding-server/derived"
-	"pudding-server/server"
+	"github.com/KitchenMishap/pudding-server/blockchain"
+	"github.com/KitchenMishap/pudding-server/derived"
+	"github.com/KitchenMishap/pudding-server/server"
 )
 
 func RunServer(folder string) error {

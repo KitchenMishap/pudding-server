@@ -2,11 +2,11 @@ package server
 
 import (
 	"fmt"
+	"github.com/KitchenMishap/pudding-server/blockchain"
+	"github.com/KitchenMishap/pudding-server/derived"
+	"github.com/KitchenMishap/pudding-server/multidag"
 	"log"
 	"net/http"
-	"pudding-server/blockchain"
-	"pudding-server/derived"
-	"pudding-server/multidag"
 	"strconv"
 	"strings"
 )

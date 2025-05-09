@@ -1,12 +1,12 @@
 package blockchain
 
 import (
+	"github.com/KitchenMishap/pudding-server/derived"
+	"github.com/KitchenMishap/pudding-server/multidag"
 	"github.com/KitchenMishap/pudding-shed/chainreadinterface"
 	"github.com/KitchenMishap/pudding-shed/chainstorage"
 	"github.com/KitchenMishap/pudding-shed/indexedhashes"
 	"math"
-	"pudding-server/derived"
-	"pudding-server/multidag"
 	"strconv"
 )
 

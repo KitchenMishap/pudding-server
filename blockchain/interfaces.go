@@ -1,6 +1,6 @@
 package blockchain
 
-import "pudding-server/multidag"
+import "github.com/KitchenMishap/pudding-server/multidag"
 
 type chain interface {
 	GetBlockchainVertex() multidag.Vertex

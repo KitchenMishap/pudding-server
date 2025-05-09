@@ -2,7 +2,7 @@ package multidag
 
 import (
 	"encoding/json"
-	"pudding-server/jsonstuff"
+	"github.com/KitchenMishap/pudding-server/jsonstuff"
 	"strconv"
 )
 
