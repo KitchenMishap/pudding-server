@@ -5,7 +5,8 @@ import (
 )
 
 func main() {
-	folder := "E:\\Data\\FleeSwallowImmune888888CswHashesDeleted"
+	//folder := "E:\\Data\\FleeSwallowImmune888888CswHashesDeleted"
+	folder := "E:\\Data\\FleeSI_ReadOnly"
 
 	//err := jobs.ConstructTxoSpentTxi(folder)
 	//err := jobs.ConstructTxoParentTrans(folder)
