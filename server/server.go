@@ -18,8 +18,10 @@ func Server(reader *blockchain.ChainReader, df *derived.DerivedFiles) {
 	theChain = reader
 	theDerived = df
 	http.HandleFunc("/", handler) // each request calls handler
-	println("Listening on port 8000, server is now active (the wait is over)")
-	log.Fatal(http.ListenAndServe("localhost:8000", nil))
+	// 14699 is a random port chosen by random.org as being between 1024 and 65535
+	println("Listening on port 14699, server is now active (the wait is over)")
+	// 0.0.0.0 allows any IP address to connect to us
+	log.Fatal(http.ListenAndServe("0.0.0.0:14699", nil))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
