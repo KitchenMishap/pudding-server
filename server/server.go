@@ -25,6 +25,10 @@ func Server(reader *blockchain.ChainReader, df *derived.DerivedFiles) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	// This is typically the IP address of the developer's machine, and may change
+	// We have to specify it, as even using a different port (as we do) counts as a CORS violation.
+	developersIp := "http://172.17.0.1"
+
 	// Get the request origin
 	origin := r.Header.Get("Origin")
 	// The following tells the browser to allow requests from 127.0.0.1
@@ -33,6 +37,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", origin)
 	}
 	if origin == "http://localhost" {
+		w.Header().Add("Access-Control-Allow-Origin", origin)
+	}
+	if origin == developersIp {
 		w.Header().Add("Access-Control-Allow-Origin", origin)
 	}
 
