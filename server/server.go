@@ -25,23 +25,16 @@ func Server(reader *blockchain.ChainReader, df *derived.DerivedFiles) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	// This is typically the IP address of the developer's machine, and may change
-	// We have to specify it, as even using a different port (as we do) counts as a CORS violation.
-	developersIp := "http://172.17.0.1"
+	// We allow cross-origin resource sharing (CORS) as this server is intended as a public resource.
+	// This means any website can access the API, even one not under "our" control.
+	// This doesn't violate the intention behind CORS restrictions - CORS is intended to prevent browsers (websites)
+	// from accessing services on the user's local network which were intended to be private.
+	// The pudding-shed server is not considered to be private.
 
 	// Get the request origin
 	origin := r.Header.Get("Origin")
-	// The following tells the browser to allow requests from 127.0.0.1
-	// This helps with CORS restrictions - Cross-Origin Resource Sharing
-	if origin == "http://127.0.0.1" {
-		w.Header().Add("Access-Control-Allow-Origin", origin)
-	}
-	if origin == "http://localhost" {
-		w.Header().Add("Access-Control-Allow-Origin", origin)
-	}
-	if origin == developersIp {
-		w.Header().Add("Access-Control-Allow-Origin", origin)
-	}
+	// The following tells the browser that requests from its IP address are allowed
+	w.Header().Add("Access-Control-Allow-Origin", origin)
 
 	parts := strings.Split(r.URL.Path, "/")
 	if len(parts) < 2 {
