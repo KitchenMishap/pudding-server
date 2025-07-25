@@ -1,17 +1,25 @@
 package main
 
 import (
+	"flag"
 	"github.com/KitchenMishap/pudding-server/jobs"
 )
 
 func main() {
-	//folder := "E:\\Data\\FleeSwallowImmune888888CswHashesDeleted"
-	//folder := "E:\\Data\\FleeSI_ReadOnly"
-	folder := "/mnt/FleeSI"
+	var sDirFlag = flag.String("Dir", "", "Directory to serve data from")
+	var bConstructFlag = flag.Bool("Construct", false, "Construct Txo Spent Txi data")
+	flag.Parse()
 
-	//err := jobs.ConstructTxoSpentTxi(folder)
+	//folder := "/mnt/FleeSI"
+
+	var err error
+	if *bConstructFlag {
+		err = jobs.ConstructTxoSpentTxi(*sDirFlag)
+	} else {
+		err = jobs.RunServer(*sDirFlag)
+	}
+
 	//err := jobs.ConstructTxoParentTrans(folder)
-	err := jobs.RunServer(folder)
 
 	if err != nil {
 		println(err.Error())
